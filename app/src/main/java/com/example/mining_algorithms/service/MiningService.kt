@@ -70,7 +70,6 @@ object MiningService {
         val lastBlock = blockchain.last()
         val newBlock = mineBlock(lastBlock.hash, complexity)
 
-        println("New block (${Thread.currentThread().name}) -> $newBlock\nMining time: ${newBlock.timestamp - lastBlock.timestamp}")
         blockchain.add(newBlock)
     }
 
@@ -81,7 +80,6 @@ object MiningService {
             Date().time
         )
 
-        println("Genesis block -> $genesisBlock")
         blockchain.add(genesisBlock)
     }
 }

@@ -27,11 +27,10 @@ class MiningThread(private val complexity: Int) : Thread() {
             }
             newBlock.nonce = Random.nextInt(0, 1000000000)
             newBlock.hash = calculateBlockHash(newBlock)
+            newBlock.data = "${newBlock.data}\n${newBlock.hash}"
             newBlock.timestamp = Date().time
-//            println("${currentThread().name} -> ${newBlock.hash}")
         }
 
-        println("New block (${currentThread().name}) -> $newBlock\nMining time: ${newBlock.timestamp - lastBlock.timestamp}")
         MiningService.addBlock(newBlock)
     }
 }

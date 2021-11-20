@@ -37,12 +37,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setOnClickListeners() {
         binding.btnStartMining.setOnClickListener {
-            val complexity: Int = binding.etMiningComplexity.text.toString().toInt()
-            val blocksCount: Int = binding.etBlocksCount.text.toString().toInt()
-            val threadsCount: Int = binding.etThreadsCount.text.toString().toInt()
-
-            MiningService.startParallelMining(blocksCount, threadsCount, complexity)
-            it.visibility = View.GONE
+            startMining()
+        }
+        binding.btnRestart.setOnClickListener {
+            restart()
         }
     }
 
@@ -60,5 +58,28 @@ class MainActivity : AppCompatActivity() {
             .subscribe {
                 binding.finishButtonsContainer.visibility = View.VISIBLE
             })
+    }
+
+    private fun startMining() {
+        val complexity: Int = binding.etMiningComplexity.text.toString().toInt()
+        val blocksCount: Int = binding.etBlocksCount.text.toString().toInt()
+        val threadsCount: Int = binding.etThreadsCount.text.toString().toInt()
+
+        binding.tvBlockchain.clearFocus()
+        binding.finishButtonsContainer.clearFocus()
+        binding.btnStartMining.clearFocus()
+
+        MiningService.startParallelMining(blocksCount, threadsCount, complexity)
+        binding.btnStartMining.visibility = View.GONE
+    }
+
+    private fun restart() {
+        binding.tvBlockchain.text = ""
+        binding.finishButtonsContainer.visibility = View.GONE
+        binding.btnStartMining.visibility = View.VISIBLE
+
+        binding.etMiningComplexity.text?.clear()
+        binding.etBlocksCount.text?.clear()
+        binding.etThreadsCount.text?.clear()
     }
 }
