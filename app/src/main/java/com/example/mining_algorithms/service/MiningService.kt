@@ -43,6 +43,8 @@ object MiningService {
     }
 
     fun startParallelMining(blocksCount: Int, threadsCount: Int, complexity: Int) {
+        clear()
+
         MiningService.complexity = complexity
         MiningService.threadsCount = threadsCount
         MiningService.blocksCount = blocksCount
@@ -52,6 +54,11 @@ object MiningService {
             miningThreads.add(MiningThread(complexity))
         }
         startThreads()
+    }
+
+    private fun clear() {
+        miningThreads.clear()
+        blockchain.clear()
     }
 
     private fun startThreads() {

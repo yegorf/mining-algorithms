@@ -79,6 +79,7 @@ class MainActivity : AppCompatActivity() {
             .subscribe {
                 binding.finishButtonsContainer.visibility = View.VISIBLE
                 binding.tvTimeSpent.visibility = View.VISIBLE
+                binding.progressBar.visibility = View.GONE
                 binding.tvTimeSpent.text = "Total time spent: ${MiningService.getTotalSpentTime()}"
             })
     }
@@ -94,6 +95,7 @@ class MainActivity : AppCompatActivity() {
 
         MiningService.startParallelMining(blocksCount, threadsCount, complexity)
         binding.btnStartMining.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     private fun restart() {

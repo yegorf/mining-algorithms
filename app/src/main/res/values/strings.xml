@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">mining-algorithms</string>
-    <string name="mining_complexity">Mining complexity</string>
-    <string name="blocks_count">Blocks count</string>
-    <string name="threads_count">Threads count</string>
+    <string name="app_name">Mining Algorithms</string>
+    <string name="mining_complexity">Complexity</string>
+    <string name="blocks_count">Blocks</string>
+    <string name="threads_count">Threads</string>
     <string name="start_mining">Start mining</string>
     <string name="export_results">Export results</string>
     <string name="restart">restart</string>
