@@ -9,7 +9,7 @@ fun calculateBlockHash(block: Block): String {
     val dataToHash: String = block.previousHash +
             block.timestamp.toString() +
             block.nonce.toString() +
-            block.data
+            block.transactions
     val bytes = SHA256Encoder.hash(dataToHash.toByteArray(StandardCharsets.UTF_8))
     val buffer = StringBuffer()
     bytes.forEach {
@@ -20,7 +20,6 @@ fun calculateBlockHash(block: Block): String {
 
 fun mineBlock(previousHash: String, complexity: Int): Block {
     val newBlock = Block(
-        getTransactions(),
         previousHash,
         Date().time
     )
@@ -59,5 +58,3 @@ fun isBlockchainValid(blockchain: List<Block>, complexity: Int): Boolean {
 
 fun generateHashPrefix(complexity: Int) = String(CharArray(complexity))
     .replace('\u0000', '0')
-
-fun getTransactions() = "This is new block"

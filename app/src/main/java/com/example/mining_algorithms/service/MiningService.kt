@@ -4,11 +4,13 @@ import com.example.mining_algorithms.event.MiningEndEvent
 import com.example.mining_algorithms.event.NewBlockEvent
 import com.example.mining_algorithms.event.RxBus
 import com.example.mining_algorithms.pojo.Block
+import com.example.mining_algorithms.pojo.Transaction
 import com.example.mining_algorithms.tools.mineBlock
 import java.util.*
+import kotlin.collections.ArrayList
 
 object MiningService {
-    private val blockchain = arrayListOf<Block>()
+    val blockchain: ArrayList<Block> = arrayListOf<Block>()
     private val miningThreads = arrayListOf<MiningThread>()
 
     private var threadsCount = 0
@@ -75,7 +77,6 @@ object MiningService {
 
     private fun generateGenesisBlock() {
         val genesisBlock = Block(
-            "This is genesis block",
             "",
             Date().time
         )

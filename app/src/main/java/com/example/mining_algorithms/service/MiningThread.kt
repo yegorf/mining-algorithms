@@ -1,6 +1,7 @@
 package com.example.mining_algorithms.service
 
 import com.example.mining_algorithms.pojo.Block
+import com.example.mining_algorithms.pojo.Transaction
 import com.example.mining_algorithms.tools.calculateBlockHash
 import com.example.mining_algorithms.tools.generateHashPrefix
 import java.util.*
@@ -16,7 +17,6 @@ class MiningThread(private val complexity: Int) : Thread() {
         val lastBlock = MiningService.getLastBlock()
         val prefixString = generateHashPrefix(complexity)
         val newBlock = Block(
-            "This is new block",
             lastBlock.hash,
             Date().time
         )
@@ -27,7 +27,7 @@ class MiningThread(private val complexity: Int) : Thread() {
             }
             newBlock.nonce = Random.nextInt(0, 1000000000)
             newBlock.hash = calculateBlockHash(newBlock)
-            newBlock.data = "${newBlock.data}\n${newBlock.hash}"
+            newBlock.transactions.add(Transaction(System.currentTimeMillis()))
             newBlock.timestamp = Date().time
         }
 

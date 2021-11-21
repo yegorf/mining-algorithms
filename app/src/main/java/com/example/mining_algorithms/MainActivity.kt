@@ -7,6 +7,7 @@ import com.example.mining_algorithms.databinding.ActivityMainBinding
 import com.example.mining_algorithms.event.MiningEndEvent
 import com.example.mining_algorithms.event.NewBlockEvent
 import com.example.mining_algorithms.event.RxBus
+import com.example.mining_algorithms.export.exportToExcel
 import com.example.mining_algorithms.service.MiningService
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -41,6 +42,9 @@ class MainActivity : AppCompatActivity() {
         }
         binding.btnRestart.setOnClickListener {
             restart()
+        }
+        binding.btnExportResults.setOnClickListener {
+            exportResults()
         }
     }
 
@@ -81,5 +85,9 @@ class MainActivity : AppCompatActivity() {
         binding.etMiningComplexity.text?.clear()
         binding.etBlocksCount.text?.clear()
         binding.etThreadsCount.text?.clear()
+    }
+
+    private fun exportResults() {
+        exportToExcel(MiningService.blockchain, this)
     }
 }
