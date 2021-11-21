@@ -9,6 +9,7 @@ data class Block(
     var nonce: Int = 0
     var hash: String = calculateBlockHash(this)
     val transactions = arrayListOf<Transaction>()
+    var timeSpent: Long = 0
 
     override fun toString(): String {
         return "Block(timestamp=$timestamp, previousHash='$previousHash', hash='$hash')"

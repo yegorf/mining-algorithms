@@ -4,13 +4,11 @@ import com.example.mining_algorithms.event.MiningEndEvent
 import com.example.mining_algorithms.event.NewBlockEvent
 import com.example.mining_algorithms.event.RxBus
 import com.example.mining_algorithms.pojo.Block
-import com.example.mining_algorithms.pojo.Transaction
 import com.example.mining_algorithms.tools.mineBlock
 import java.util.*
-import kotlin.collections.ArrayList
 
 object MiningService {
-    val blockchain: ArrayList<Block> = arrayListOf<Block>()
+    val blockchain: ArrayList<Block> = arrayListOf()
     private val miningThreads = arrayListOf<MiningThread>()
 
     private var threadsCount = 0
@@ -18,6 +16,14 @@ object MiningService {
     private var blocksCount = 0
 
     fun getLastBlock() = blockchain.last()
+
+    fun getTotalSpentTime(): Long {
+        var time = 0L
+        blockchain.forEach {
+            time += it.timeSpent
+        }
+        return time
+    }
 
     @Synchronized
     fun addBlock(block: Block) {

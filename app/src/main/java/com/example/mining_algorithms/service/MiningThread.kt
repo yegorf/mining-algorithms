@@ -8,6 +8,7 @@ import java.util.*
 import kotlin.random.Random
 
 class MiningThread(private val complexity: Int) : Thread() {
+    private val nonceRange = 1000000000
 
     override fun run() {
         mineBlockParallel()
@@ -25,10 +26,11 @@ class MiningThread(private val complexity: Int) : Thread() {
             if (isInterrupted) {
                 return
             }
-            newBlock.nonce = Random.nextInt(0, 1000000000)
+            newBlock.nonce = Random.nextInt(0, nonceRange)
             newBlock.hash = calculateBlockHash(newBlock)
             newBlock.transactions.add(Transaction(System.currentTimeMillis()))
             newBlock.timestamp = Date().time
+            newBlock.timeSpent = newBlock.timestamp - lastBlock.timestamp
         }
 
         MiningService.addBlock(newBlock)

@@ -69,17 +69,29 @@
         android:layout_gravity="center"
         android:text="@string/start_mining" />
 
-    <TextView
-        android:id="@+id/tv_blockchain"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_blocks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="10sp"
-        tools:text="hash" />
+        tools:listitem="@layout/item_block" />
+
+    <TextView
+        android:id="@+id/tv_time_spent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="10dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:text="Time spent in total: 40s"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/finish_buttons_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
         android:visibility="gone"
         tools:visibility="visible">
 
@@ -87,20 +99,20 @@
             android:id="@+id/btn_restart"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="@string/restart" />
 
         <Space
-            android:layout_width="5dp"
+            android:layout_width="10dp"
             android:layout_height="match_parent" />
 
         <Button
             android:id="@+id/btn_export_results"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:text="@string/export_results" />
 
     </LinearLayout>
