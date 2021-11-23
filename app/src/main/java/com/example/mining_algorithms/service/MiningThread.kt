@@ -31,6 +31,8 @@ class MiningThread(private val complexity: Int) : Thread() {
             newBlock.transactions.add(Transaction(System.currentTimeMillis()))
             newBlock.timestamp = Date().time
             newBlock.timeSpent = newBlock.timestamp - lastBlock.timestamp
+
+            MiningService.iterateHashCount()
         }
 
         MiningService.addBlock(newBlock)

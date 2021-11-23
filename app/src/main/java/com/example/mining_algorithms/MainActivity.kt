@@ -78,9 +78,10 @@ class MainActivity : AppCompatActivity() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.finishButtonsContainer.visibility = View.VISIBLE
-                binding.tvTimeSpent.visibility = View.VISIBLE
+                binding.tvResultData.visibility = View.VISIBLE
                 binding.progressBar.visibility = View.GONE
-                binding.tvTimeSpent.text = "Total time spent: ${MiningService.getTotalSpentTime()}"
+                binding.tvResultData.text =
+                    "Total time spent: ${MiningService.getTotalSpentTime()}\nTotal hashes count: ${MiningService.totalHashCount}"
             })
     }
 
@@ -106,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         binding.etBlocksCount.text?.clear()
         binding.etThreadsCount.text?.clear()
 
-        binding.tvTimeSpent.visibility = View.GONE
+        binding.tvResultData.visibility = View.GONE
         adapter.clear()
     }
 

@@ -15,6 +15,13 @@ object MiningService {
     private var complexity = 0
     private var blocksCount = 0
 
+    var totalHashCount = 0
+
+    @Synchronized
+    fun iterateHashCount() {
+        totalHashCount++
+    }
+
     fun getLastBlock() = blockchain.last()
 
     fun getTotalSpentTime(): Long {

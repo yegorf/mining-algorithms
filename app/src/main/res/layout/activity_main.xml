@@ -85,7 +85,7 @@
         tools:listitem="@layout/item_block" />
 
     <TextView
-        android:id="@+id/tv_time_spent"
+        android:id="@+id/tv_result_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -93,7 +93,7 @@
         android:textColor="@color/black"
         android:textStyle="bold"
         android:visibility="gone"
-        tools:text="Time spent in total: 40s"
+        tools:text="Time spent in total: 40s\nTotal hash count: 34234234"
         tools:visibility="visible" />
 
     <LinearLayout
