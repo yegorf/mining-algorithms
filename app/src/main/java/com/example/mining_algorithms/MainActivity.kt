@@ -9,9 +9,10 @@ import com.example.mining_algorithms.databinding.ActivityMainBinding
 import com.example.mining_algorithms.event.MiningEndEvent
 import com.example.mining_algorithms.event.NewBlockEvent
 import com.example.mining_algorithms.event.RxBus
-import com.example.mining_algorithms.export.exportToExcel
 import com.example.mining_algorithms.presentation.BlocksAdapter
 import com.example.mining_algorithms.service.MiningService
+import com.jjoe64.graphview.series.DataPoint
+import com.jjoe64.graphview.series.LineGraphSeries
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -80,8 +81,27 @@ class MainActivity : AppCompatActivity() {
                 binding.finishButtonsContainer.visibility = View.VISIBLE
                 binding.tvResultData.visibility = View.VISIBLE
                 binding.progressBar.visibility = View.GONE
+
+                val timeSec: Double = (MiningService.getTotalSpentTime().toDouble() / 1000)
+                val count = MiningService.totalHashCount
+                val rate = count.toDouble() / MiningService.getTotalSpentTime().toDouble()
+
                 binding.tvResultData.text =
-                    "Total time spent: ${MiningService.getTotalSpentTime()}\nTotal hashes count: ${MiningService.totalHashCount}"
+                    "Total time spent: $timeSec s\nTotal hashes count: $count\nHash rate: $rate h/s"
+
+                binding.viewGraph.visibility = View.VISIBLE
+
+                val blockchain = MiningService.blockchain
+                val pointsCount = blockchain.size - 1
+                val series = LineGraphSeries<DataPoint>()
+
+                for (i in 0..pointsCount) {
+                    series.appendData(DataPoint(i.toDouble(), blockchain[i].timeSpent.toDouble()), true, pointsCount)
+                }
+
+                val thickness = binding.etThreadsCount.text.toString().toInt()
+                series.thickness = thickness
+                binding.viewGraph.addSeries(series)
             })
     }
 
@@ -109,9 +129,12 @@ class MainActivity : AppCompatActivity() {
 
         binding.tvResultData.visibility = View.GONE
         adapter.clear()
+        MiningService.blockchain.clear()
+        binding.viewGraph.removeAllSeries()
+        binding.viewGraph.visibility = View.GONE
     }
 
     private fun exportResults() {
-        exportToExcel(MiningService.blockchain, this)
+        //exportToExcel(MiningService.blockchain, this)
     }
 }
