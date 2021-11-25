@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 val rate = count.toDouble() / MiningService.getTotalSpentTime().toDouble()
 
                 binding.tvResultData.text =
-                    "Total time spent: $timeSec s\nTotal hashes count: $count\nHash rate: $rate h/s"
+                    "Total time spent: $timeSec s  Total hashes count: $count\nHash rate: $rate h/s"
 
                 binding.viewGraph.visibility = View.VISIBLE
 
@@ -102,6 +102,8 @@ class MainActivity : AppCompatActivity() {
                 val thickness = binding.etThreadsCount.text.toString().toInt()
                 series.thickness = thickness
                 binding.viewGraph.addSeries(series)
+
+                binding.tvBlockchain.visibility = View.VISIBLE
             })
     }
 
@@ -116,6 +118,7 @@ class MainActivity : AppCompatActivity() {
 
         MiningService.startParallelMining(blocksCount, threadsCount, complexity)
         binding.btnStartMining.visibility = View.GONE
+        binding.tvBlockchain.visibility = View.GONE
         binding.progressBar.visibility = View.VISIBLE
     }
 

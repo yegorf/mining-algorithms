@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mining Algorithms</string>
+    <string name="app_name">Parallel Mining Algorithms</string>
     <string name="mining_complexity">Complexity</string>
     <string name="blocks_count">Blocks</string>
     <string name="threads_count">Threads</string>

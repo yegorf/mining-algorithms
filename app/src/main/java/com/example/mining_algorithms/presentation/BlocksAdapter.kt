@@ -14,7 +14,8 @@ class BlocksAdapter : RecyclerView.Adapter<BlocksAdapter.BlockHolder>() {
 
         fun bind(block: Block) {
             binding.tvHash.text = block.hash
-            binding.tvTime.text = block.timeSpent.toString()
+            binding.tvTime.text = "${block.timeSpent} ms"
+            binding.tvTransactions.text = "${block.transactions.size} transactions"
         }
     }
 
