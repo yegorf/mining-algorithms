@@ -2,6 +2,7 @@ package com.example.mining_algorithms
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +12,9 @@ import com.example.mining_algorithms.event.NewBlockEvent
 import com.example.mining_algorithms.event.RxBus
 import com.example.mining_algorithms.presentation.BlocksAdapter
 import com.example.mining_algorithms.service.MiningService
+import com.example.mining_algorithms.tools.generateExcelFile
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val disposables = CompositeDisposable()
     private val adapter = BlocksAdapter()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,7 +101,12 @@ class MainActivity : AppCompatActivity() {
                 val series = LineGraphSeries<DataPoint>()
 
                 for (i in 0..pointsCount) {
-                    series.appendData(DataPoint(i.toDouble(), blockchain[i].timeSpent.toDouble()), true, pointsCount)
+                    series.appendData(
+                        DataPoint(
+                            i.toDouble(),
+                            blockchain[i].timeSpent.toDouble()
+                        ), true, pointsCount
+                    )
                 }
 
                 val thickness = binding.etThreadsCount.text.toString().toInt()
@@ -135,9 +145,21 @@ class MainActivity : AppCompatActivity() {
         MiningService.blockchain.clear()
         binding.viewGraph.removeAllSeries()
         binding.viewGraph.visibility = View.GONE
+        binding.tvBlockchain.visibility = View.GONE
     }
 
     private fun exportResults() {
-        //exportToExcel(MiningService.blockchain, this)
+        val riversRef: StorageReference =
+            FirebaseStorage.getInstance().reference.child("mining-data/${System.currentTimeMillis()}.xlsx")
+
+        riversRef.putBytes(generateExcelFile().toByteArray())
+            .addOnSuccessListener { taskSnapshot ->
+                Toast.makeText(this, "File uploaded: $taskSnapshot", Toast.LENGTH_LONG).show()
+                restart()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "File upload faild", Toast.LENGTH_LONG).show()
+                restart()
+            }
     }
 }
