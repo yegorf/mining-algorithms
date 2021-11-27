@@ -7,13 +7,8 @@ import com.example.mining_algorithms.tools.generateHashPrefix
 import java.util.*
 import kotlin.random.Random
 
+private const val nonceRange = 1000000000
 class MiningThread(private val complexity: Int) : Thread() {
-    private val nonceRange = 1000000000
-
-    override fun run() {
-        mineBlockParallel()
-    }
-
     private fun mineBlockParallel() {
         val lastBlock = MiningService.getLastBlock()
         val prefixString = generateHashPrefix(complexity)
@@ -21,7 +16,6 @@ class MiningThread(private val complexity: Int) : Thread() {
             lastBlock.hash,
             Date().time
         )
-
         while (newBlock.hash.substring(0, complexity) != prefixString) {
             if (isInterrupted) {
                 return
@@ -34,7 +28,10 @@ class MiningThread(private val complexity: Int) : Thread() {
 
             MiningService.iterateHashCount()
         }
-
         MiningService.addBlock(newBlock)
+    }
+
+    override fun run() {
+        mineBlockParallel()
     }
 }

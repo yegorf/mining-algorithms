@@ -28,25 +28,15 @@ public class SHA256Encoder {
 
 
     public static byte[] hash(byte[] message) {
-        // let H = H0
         System.arraycopy(H0, 0, H, 0, H0.length);
 
-        // initialize all words
         int[] words = pad(message);
-
-        // enumerate all blocks (each containing 16 words)
         for (int i = 0, n = words.length / 16; i < n; ++i) {
-
-            // initialize W from the block's words
             System.arraycopy(words, i * 16, W, 0, 16);
             for (int t = 16; t < W.length; ++t) {
                 W[t] = smallSig1(W[t - 2]) + W[t - 7] + smallSig0(W[t - 15]) + W[t - 16];
             }
-
-            // let TEMP = H
             System.arraycopy(H, 0, TEMP, 0, H.length);
-
-            // operate on TEMP
             for (int t = 0; t < W.length; ++t) {
                 int t1 = TEMP[7] + bigSig1(TEMP[4]) + ch(TEMP[4], TEMP[5], TEMP[6]) + K[t] + W[t];
                 int t2 = bigSig0(TEMP[0]) + maj(TEMP[0], TEMP[1], TEMP[2]);
@@ -54,8 +44,6 @@ public class SHA256Encoder {
                 TEMP[4] += t1;
                 TEMP[0] = t1 + t2;
             }
-
-            // add values in TEMP to values in H
             for (int t = 0; t < H.length; ++t) {
                 H[t] += TEMP[t];
             }
@@ -64,36 +52,22 @@ public class SHA256Encoder {
         return toByteArray(H);
     }
 
-    /**
-     * <b>Internal method, no need to call.</b> Pads the given message to have a length
-     * that is a multiple of 512 bits (64 bytes), including the addition of a
-     * 1-bit, k 0-bits, and the message length as a 64-bit integer.
-     * The result is a 32-bit integer array with big-endian byte representation.
-     *
-     * @param message The message to pad.
-     * @return A new array with the padded message bytes.
-     */
+
     public static int[] pad(byte[] message) {
-        // new message length: original + 1-bit and padding + 8-byte length
-        // --> block count: whole blocks + (padding + length rounded up)
         int finalBlockLength = message.length % BLOCK_BYTES;
         int blockCount = message.length / BLOCK_BYTES + (finalBlockLength + 1 + 8 > BLOCK_BYTES ? 2 : 1);
 
         final IntBuffer result = IntBuffer.allocate(blockCount * (BLOCK_BYTES / Integer.BYTES));
 
-        // copy as much of the message as possible
         ByteBuffer buf = ByteBuffer.wrap(message);
         for (int i = 0, n = message.length / Integer.BYTES; i < n; ++i) {
             result.put(buf.getInt());
         }
-        // copy the remaining bytes (less than 4) and append 1 bit (rest is zero)
         ByteBuffer remainder = ByteBuffer.allocate(4);
         remainder.put(buf).put((byte) 0b10000000).rewind();
         result.put(remainder.getInt());
 
-        // ignore however many pad bytes (implicitly calculated in the beginning)
         result.position(result.capacity() - 2);
-        // place original message length as 64-bit integer at the end
         long msgLength = message.length * 8L;
         result.put((int) (msgLength >>> 32));
         result.put((int) msgLength);

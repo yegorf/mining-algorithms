@@ -1,7 +1,9 @@
 package com.example.mining_algorithms
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,6 +22,9 @@ import com.jjoe64.graphview.series.LineGraphSeries
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity() {
@@ -94,30 +99,38 @@ class MainActivity : AppCompatActivity() {
                 binding.tvResultData.text =
                     "Total time spent: $timeSec s  Total hashes count: $count\nHash rate: $rate h/s"
 
-                binding.viewGraph.visibility = View.VISIBLE
-
-                val blockchain = MiningService.blockchain
-                val pointsCount = blockchain.size - 1
-                val series = LineGraphSeries<DataPoint>()
-
-                for (i in 0..pointsCount) {
-                    series.appendData(
-                        DataPoint(
-                            i.toDouble(),
-                            blockchain[i].timeSpent.toDouble()
-                        ), true, pointsCount
-                    )
-                }
-
-                val thickness = binding.etThreadsCount.text.toString().toInt()
-                series.thickness = thickness
-                binding.viewGraph.addSeries(series)
-
                 binding.tvBlockchain.visibility = View.VISIBLE
+
+                drawGraph()
             })
     }
 
+    private fun drawGraph() {
+        binding.viewGraph.visibility = View.VISIBLE
+
+        val blockchain = MiningService.blockchain
+        val pointsCount = blockchain.size - 1
+        val series = LineGraphSeries<DataPoint>()
+
+        for (i in 0..pointsCount) {
+            series.appendData(
+                DataPoint(
+                    i.toDouble(),
+                    blockchain[i].timeSpent.toDouble()
+                ), true, pointsCount
+            )
+        }
+
+        series.thickness = 2
+        binding.viewGraph.addSeries(series)
+    }
+
     private fun startMining() {
+        this.currentFocus?.let { view ->
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            imm?.hideSoftInputFromWindow(view.windowToken, 0)
+        }
+
         val complexity: Int = binding.etMiningComplexity.text.toString().toInt()
         val blocksCount: Int = binding.etBlocksCount.text.toString().toInt()
         val threadsCount: Int = binding.etThreadsCount.text.toString().toInt()
@@ -154,12 +167,31 @@ class MainActivity : AppCompatActivity() {
 
         reference.putBytes(generateExcelFile().toByteArray())
             .addOnSuccessListener { taskSnapshot ->
-                Toast.makeText(this, "File uploaded: ${taskSnapshot.uploadSessionUri}", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this,
+                    "File uploaded: ${taskSnapshot.uploadSessionUri}",
+                    Toast.LENGTH_LONG
+                ).show()
                 restart()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "File upload failed", Toast.LENGTH_LONG).show()
                 restart()
             }
+    }
+
+    fun cpuTemperature(): Float {
+        val p: Process
+        return try {
+            p = Runtime.getRuntime().exec("cat sys/class/thermal/thermal_zone0/temp")
+            p.waitFor()
+            val reader =
+                BufferedReader(InputStreamReader(p.inputStream))
+            val line = reader.readLine()
+            line.toFloat() / 1000.0f
+        } catch (e: Exception) {
+            e.printStackTrace()
+            0.0f
+        }
     }
 }
