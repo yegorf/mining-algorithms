@@ -1,5 +1,6 @@
 package com.example.mining_algorithms.tools
 
+import android.os.Build
 import com.example.mining_algorithms.service.MiningService
 import org.apache.poi.ss.usermodel.*
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -7,12 +8,14 @@ import java.io.ByteArrayOutputStream
 
 fun generateExcelFile(): ByteArrayOutputStream {
     val workbook: Workbook = XSSFWorkbook()
-    val sheet: Sheet = workbook.createSheet("Data")
+    val sheet: Sheet = workbook.createSheet("Blockchain")
     sheet.setColumnWidth(0, 6000)
     sheet.setColumnWidth(1, 4000)
 
     createHeader(workbook, sheet)
     writeData(workbook, sheet)
+    writeResults(workbook)
+    writeMetadata(workbook)
 
     val baos = ByteArrayOutputStream()
     workbook.write(baos)
@@ -29,7 +32,7 @@ private fun createHeader(workbook: Workbook, sheet: Sheet) {
 
     val font = (workbook as XSSFWorkbook).createFont()
     font.fontName = "Arial"
-    font.fontHeightInPoints = 16.toShort()
+    font.fontHeightInPoints = 14.toShort()
     font.bold = true
     headerStyle.setFont(font)
 
@@ -62,4 +65,89 @@ private fun writeData(workbook: Workbook, sheet: Sheet) {
 
         rawNum++
     }
+}
+
+private fun writeMetadata(workbook: Workbook) {
+    val sheet: Sheet = workbook.createSheet("Metadata")
+    sheet.setColumnWidth(0, 4000)
+    sheet.setColumnWidth(1, 4000)
+
+    val headerStyle = workbook.createCellStyle()
+
+    val font = (workbook as XSSFWorkbook).createFont()
+    font.fontName = "Arial"
+    font.fontHeightInPoints = 12.toShort()
+    headerStyle.setFont(font)
+
+    var header: Row = sheet.createRow(0)
+    var headerCell: Cell = header.createCell(0)
+    headerCell.setCellValue("Model")
+    headerCell.cellStyle = headerStyle
+
+    headerCell = header.createCell(1)
+    headerCell.setCellValue(Build.MODEL)
+    headerCell.cellStyle = headerStyle
+
+    header = sheet.createRow(1)
+
+    headerCell = header.createCell(0)
+    headerCell.setCellValue("Manufacturer")
+    headerCell.cellStyle = headerStyle
+
+    headerCell = header.createCell(1)
+    headerCell.setCellValue(Build.MANUFACTURER)
+    headerCell.cellStyle = headerStyle
+
+    header = sheet.createRow(2)
+
+    headerCell = header.createCell(0)
+    headerCell.setCellValue("Android SDK")
+    headerCell.cellStyle = headerStyle
+
+    headerCell = header.createCell(1)
+    headerCell.setCellValue(Build.VERSION.SDK_INT.toString())
+    headerCell.cellStyle = headerStyle
+}
+
+private fun writeResults(workbook: Workbook) {
+    val blockchain = MiningService.blockchain
+    val sheet: Sheet = workbook.createSheet("Results")
+    sheet.setColumnWidth(0, 6000)
+    sheet.setColumnWidth(1, 4000)
+
+    val headerStyle = workbook.createCellStyle()
+
+    val font = (workbook as XSSFWorkbook).createFont()
+    font.fontName = "Arial"
+    font.fontHeightInPoints = 12.toShort()
+    headerStyle.setFont(font)
+
+    var header: Row = sheet.createRow(0)
+    var headerCell: Cell = header.createCell(0)
+    headerCell.setCellValue("Blocks count")
+    headerCell.cellStyle = headerStyle
+
+    headerCell = header.createCell(1)
+    headerCell.setCellValue(blockchain.size.toString())
+    headerCell.cellStyle = headerStyle
+
+    header = sheet.createRow(1)
+
+    headerCell = header.createCell(0)
+    headerCell.setCellValue("Total time spent")
+    headerCell.cellStyle = headerStyle
+
+    headerCell = header.createCell(1)
+    headerCell.setCellValue(MiningService.getTotalSpentTime().toString())
+    headerCell.cellStyle = headerStyle
+
+    header = sheet.createRow(2)
+
+    headerCell = header.createCell(0)
+    headerCell.setCellValue("Total hashes count")
+    headerCell.cellStyle = headerStyle
+
+    headerCell = header.createCell(1)
+    headerCell.setCellValue(MiningService.totalHashCount.toString())
+    headerCell.cellStyle = headerStyle
 }

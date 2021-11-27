@@ -149,16 +149,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun exportResults() {
-        val riversRef: StorageReference =
+        val reference: StorageReference =
             FirebaseStorage.getInstance().reference.child("mining-data/${System.currentTimeMillis()}.xlsx")
 
-        riversRef.putBytes(generateExcelFile().toByteArray())
+        reference.putBytes(generateExcelFile().toByteArray())
             .addOnSuccessListener { taskSnapshot ->
-                Toast.makeText(this, "File uploaded: $taskSnapshot", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "File uploaded: ${taskSnapshot.uploadSessionUri}", Toast.LENGTH_LONG).show()
                 restart()
             }
             .addOnFailureListener {
-                Toast.makeText(this, "File upload faild", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "File upload failed", Toast.LENGTH_LONG).show()
                 restart()
             }
     }
